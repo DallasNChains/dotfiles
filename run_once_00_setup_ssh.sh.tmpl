@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
+    echo "Generating SSH key..."
+    ssh-keygen -t ed25519 -C "{{ .email }}" -q -N ""
+    eval "$(ssh-agent -s)"
+
+    echo "Copying public key to clipboard..."
+    {{ if eq .chezmoi.os "darwin" }}
+        ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+        pbcopy < ~/.ssh/id_ed25519.pub
+    {{ else if contains "WSL" .chezmoi.kernel.osrelease }}
+        ssh-add ~/.ssh/id_ed25519
+        clip.exe < ~/.ssh/id_ed25519.pub
+    {{ else }}
+        ssh-add ~/.ssh/id_ed25519
+        xclip -selection clipboard < ~/.ssh/id_ed25519.pub
+    {{ end }}
+
+    echo ""
+    echo "SSH key copied to the clipboard!"
+    echo "Go to https://github.com/settings/ssh/new and add it to your account."
+    read -n 1 -s -r -p "Press any key to continue setup once added..."
+    echo ""
+else
+    echo "SSH key already exists. Skipping..."
+fi

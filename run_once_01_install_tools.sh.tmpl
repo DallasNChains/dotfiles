@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -e
+
+# OS dependencies
+{{ if eq .chezmoi.os "linux" }}
+    echo "Installing Linux base dependencies..."
+    sudo apt-get update -y
+    sudo apt-get install -y build-essential curl git zsh unzip
+{{ else if eq .chezmoi.os "darwin" }}
+    echo "Installing Apple base dependencies..."
+    xcode-select -p &> /dev/null || xcode-select --install
+{{ end }}
+
+# Hombrew, my beloved.
+if ! command -v brew &> /dev/null; then
+    echo "Installing Homebrew..."
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# Set up the path so this script will actually work.
+{{ if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ else if eq .chezmoi.os "darwin" }}
+    eval "$(/usr/local/bin/brew shellenv)"
+{{ else if eq .chezmoi.os "linux" }}
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+{{ end }}
+
+# Brewing up everything.
+echo "Installing packages from Brewfile..."
+brew bundle --file={{ .chezmoi.sourceDir }}/Brewfile
+
+# OMZ installation
+if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+    echo "Installing Oh-My-Zsh..."
+    RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
+
+# OMZ plugin installation
+ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+fi
+if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+fi
+
+# Update shell to ZSH now.
+if [ "$SHELL" != "$(which zsh)" ]; then
+    echo "Changing default shell to zsh..."
+    sudo chsh -s "$(which zsh)" "$USER"
+fi
