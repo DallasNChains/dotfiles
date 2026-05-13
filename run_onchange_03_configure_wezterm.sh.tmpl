@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# wezterm.lua checksum: {{ include "dot_config/wezterm/wezterm.lua.tmpl" | sha256sum }}
+
+{{ if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+    WIN_USER=$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r\n')
+    WEZTERM_WIN_CONFIG="/mnt/c/Users/${WIN_USER}/.config/wezterm"
+
+    echo "Copying WezTerm config to Windows..."
+    mkdir -p "$WEZTERM_WIN_CONFIG"
+    cp ~/.config/wezterm/wezterm.lua "$WEZTERM_WIN_CONFIG/wezterm.lua"
+
+    echo "Launching WezTerm..."
+    nohup "wezterm.exe" > /dev/null 2>&1 &
+{{ end }}
