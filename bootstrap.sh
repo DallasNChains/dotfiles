@@ -3,7 +3,7 @@ set -euxo pipefail
 
 if ! command -v chezmoi &>/dev/null; then
     echo "Installing chezmoi..."
-    sudo sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply DallasNChains
+    sh -c "$(curl -fsLS get.chezmoi.io/lb)" -- init --apply DallasNChains
 else
     echo "chezmoi already installed. Applying..."
     chezmoi apply

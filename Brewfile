@@ -9,7 +9,7 @@ cask "font-jetbrains-mono-nerd-font"
 if OS.mac?
   cask "rectangle"
   cask "wezterm"
-else OS.linux?
+elsif OS.linux?
   tap "wezterm/wezterm-linuxbrew"
   brew "wezterm"
 end
