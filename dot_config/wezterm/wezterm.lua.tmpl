@@ -1,0 +1,115 @@
+local wezterm = require 'wezterm'
+local config  = wezterm.config_builder()
+local act     = wezterm.action
+
+-- Colors and fonts
+
+config.colors = {
+  foreground    = '#576175',
+  background    = '#E5F6FF',
+  cursor_bg     = '#0077B3',
+  cursor_fg     = '#576175',
+  cursor_border = '#0077B3',
+  selection_fg  = '#383A42',
+  selection_bg  = '#C4C9D4',
+
+  ansi = {
+    '#576175', -- black
+    '#E62200', -- red
+    '#219C16', -- green
+    '#E8DF7D', -- yellow
+    '#1AB2FF', -- blue
+    '#CC33CC', -- magenta
+    '#34B2B2', -- cyan
+    '#FAFAFA', -- white
+  },
+  brights = {
+    '#8A94A8', -- bright black
+    '#FF4D4D', -- bright red
+    '#26B319', -- bright green
+    '#F0EAA8', -- bright yellow
+    '#80D4FF', -- bright blue
+    '#E64DE6', -- bright magenta
+    '#33CCCC', -- bright cyan
+    '#FFFFFF', -- bright white
+  },
+}
+
+config.font      = wezterm.font('JetBrainsMono Nerd Font Mono', { weight = 'Regular' })
+config.font_size = 14.0
+
+-- Window config
+
+config.use_fancy_tab_bar          = true
+config.hide_tab_bar_if_only_one_tab = false
+config.tab_bar_at_bottom          = false
+config.initial_cols    = 120
+config.initial_rows    = 50
+config.scrollback_lines = 999999
+config.default_cwd = wezterm.home_dir .. '/Code'
+
+-- Input handling
+
+local mod = wezterm.target_triple:find('darwin') and 'SUPER' or 'CTRL'
+
+config.mouse_bindings = {
+  {
+    event  = { Down = { streak = 1, button = 'Right' } },
+    mods   = 'NONE',
+    action = wezterm.action.PasteFrom 'Clipboard',
+  },
+}
+
+config.keys = {
+  -- Copy: only copies when text is selected; otherwise sends Ctrl+C (SIGINT) as normal
+  {
+    key = 'c', mods = mod,
+    action = wezterm.action_callback(function(window, pane)
+      if window:get_selection_text_for_pane(pane) ~= '' then
+        window:perform_action(act.CopyTo 'ClipboardAndPrimarySelection', pane)
+      else
+        window:perform_action(act.SendKey { key = 'c', mods = 'CTRL' }, pane)
+      end
+    end),
+  },
+
+  -- Paste
+  { key = 'v', mods = mod, action = act.PasteFrom 'Clipboard' },
+
+  -- Tabs
+  { key = 't', mods = mod,       action = act.SpawnTab 'CurrentPaneDomain' },
+  { key = 'w', mods = mod,       action = act.CloseCurrentTab { confirm = false } },
+  { key = '[', mods = mod,       action = act.ActivateTabRelative(-1) },
+  { key = ']', mods = mod,       action = act.ActivateTabRelative(1) },
+  { key = '1', mods = mod, action = act.ActivateTab(0) },
+  { key = '2', mods = mod, action = act.ActivateTab(1) },
+  { key = '3', mods = mod, action = act.ActivateTab(2) },
+  { key = '4', mods = mod, action = act.ActivateTab(3) },
+  { key = '5', mods = mod, action = act.ActivateTab(4) },
+
+  -- Navigate panes
+  { key = 'LeftArrow',  mods = mod, action = act.ActivatePaneDirection 'Left'  },
+  { key = 'RightArrow', mods = mod, action = act.ActivatePaneDirection 'Right' },
+  { key = 'UpArrow',    mods = mod, action = act.ActivatePaneDirection 'Up'    },
+  { key = 'DownArrow',  mods = mod, action = act.ActivatePaneDirection 'Down'  },
+
+  -- Find
+  { key = 'f', mods = mod, action = act.Search { CaseSensitiveString = '' } },
+}
+
+-- Notifications
+
+config.audible_bell = 'Disabled'
+config.visual_bell  = {
+  fade_in_function     = 'EaseIn',
+  fade_in_duration_ms  = 75,
+  fade_out_function    = 'EaseOut',
+  fade_out_duration_ms = 75,
+}
+
+{{ if eq .chezmoi.os "windows" -}}
+-- On Windows, default to WSL
+config.default_prog = { 'wsl.exe', '--cd', '~' }
+{{ end -}}
+
+return config
