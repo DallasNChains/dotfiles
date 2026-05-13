@@ -2,3 +2,4 @@
 Library/
 {{ end }}
 README.md
+bootstrap.sh
