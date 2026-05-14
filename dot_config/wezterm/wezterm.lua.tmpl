@@ -1,6 +1,6 @@
 local wezterm = require 'wezterm'
 local config  = wezterm.config_builder()
-local act     = wezterm.action
+local act = wezterm.action
 
 -- Colors and fonts
 
@@ -14,39 +14,63 @@ config.colors = {
   selection_bg  = '#C4C9D4',
 
   ansi = {
-    '#576175', -- black
-    '#E62200', -- red
-    '#219C16', -- green
-    '#E8DF7D', -- yellow
-    '#1AB2FF', -- blue
-    '#CC33CC', -- magenta
-    '#34B2B2', -- cyan
-    '#FAFAFA', -- white
+    '#576175', '#E62200', '#219C16', '#E8DF7D',
+    '#1AB2FF', '#CC33CC', '#34B2B2', '#FAFAFA',
   },
   brights = {
-    '#8A94A8', -- bright black
-    '#FF4D4D', -- bright red
-    '#26B319', -- bright green
-    '#F0EAA8', -- bright yellow
-    '#80D4FF', -- bright blue
-    '#E64DE6', -- bright magenta
-    '#33CCCC', -- bright cyan
-    '#FFFFFF', -- bright white
+    '#8A94A8', '#FF4D4D', '#26B319', '#F0EAA8',
+    '#80D4FF', '#E64DE6', '#33CCCC', '#FFFFFF',
   },
+
+  tab_bar = {
+    background = '#C4C9D4',
+
+    active_tab = {
+      bg_color = '#E5F6FF',
+      fg_color = '#576175',
+    },
+
+    inactive_tab = {
+      bg_color = '#C4C9D4',
+      fg_color = '#576175',
+    },
+
+    inactive_tab_hover = {
+      bg_color = '#8A94A8',
+      fg_color = '#FAFAFA',
+    },
+
+    new_tab = {
+      bg_color = '#C4C9D4',
+      fg_color = '#576175',
+    },
+    new_tab_hover = {
+      bg_color = '#0077B3',
+      fg_color = '#FAFAFA',
+    },
+  }
 }
 
-config.font      = wezterm.font('JetBrainsMono Nerd Font Mono', { weight = 'Regular' })
+config.window_frame = {
+  active_titlebar_bg = '#C4C9D4',
+  inactive_titlebar_bg = '#C4C9D4',
+}
+
+config.font = wezterm.font('JetBrainsMono Nerd Font Mono', { weight = 'Regular' })
 config.font_size = 14.0
 
 -- Window config
 
-config.use_fancy_tab_bar          = true
+config.use_fancy_tab_bar = true
 config.hide_tab_bar_if_only_one_tab = false
-config.tab_bar_at_bottom          = false
-config.initial_cols    = 120
-config.initial_rows    = 50
+config.tab_bar_at_bottom = false
+config.initial_cols = 120
+config.initial_rows  = 50
 config.scrollback_lines = 999999
 config.default_cwd = wezterm.home_dir .. '/Code'
+config.window_decorations = 'RESIZE|INTEGRATED_BUTTONS'
+config.window_background_opacity = 0.95
+config.window_close_confirmation = 'NeverPrompt'
 
 -- Input handling
 
@@ -55,13 +79,12 @@ local mod = wezterm.target_triple:find('darwin') and 'SUPER' or 'CTRL'
 config.mouse_bindings = {
   {
     event  = { Down = { streak = 1, button = 'Right' } },
-    mods   = 'NONE',
+    mods = 'NONE',
     action = wezterm.action.PasteFrom 'Clipboard',
   },
 }
 
 config.keys = {
-  -- Copy: only copies when text is selected; otherwise sends Ctrl+C (SIGINT) as normal
   {
     key = 'c', mods = mod,
     action = wezterm.action_callback(function(window, pane)
@@ -77,10 +100,10 @@ config.keys = {
   { key = 'v', mods = mod, action = act.PasteFrom 'Clipboard' },
 
   -- Tabs
-  { key = 't', mods = mod,       action = act.SpawnTab 'CurrentPaneDomain' },
-  { key = 'w', mods = mod,       action = act.CloseCurrentTab { confirm = false } },
-  { key = '[', mods = mod,       action = act.ActivateTabRelative(-1) },
-  { key = ']', mods = mod,       action = act.ActivateTabRelative(1) },
+  { key = 't', mods = mod, action = act.SpawnTab 'CurrentPaneDomain' },
+  { key = 'w', mods = mod, action = act.CloseCurrentTab { confirm = false } },
+  { key = '[', mods = mod, action = act.ActivateTabRelative(-1) },
+  { key = ']', mods = mod, action = act.ActivateTabRelative(1) },
   { key = '1', mods = mod, action = act.ActivateTab(0) },
   { key = '2', mods = mod, action = act.ActivateTab(1) },
   { key = '3', mods = mod, action = act.ActivateTab(2) },
@@ -88,10 +111,10 @@ config.keys = {
   { key = '5', mods = mod, action = act.ActivateTab(4) },
 
   -- Navigate panes
-  { key = 'LeftArrow',  mods = mod, action = act.ActivatePaneDirection 'Left'  },
+  { key = 'LeftArrow', mods = mod, action = act.ActivatePaneDirection 'Left' },
   { key = 'RightArrow', mods = mod, action = act.ActivatePaneDirection 'Right' },
-  { key = 'UpArrow',    mods = mod, action = act.ActivatePaneDirection 'Up'    },
-  { key = 'DownArrow',  mods = mod, action = act.ActivatePaneDirection 'Down'  },
+  { key = 'UpArrow', mods = mod, action = act.ActivatePaneDirection 'Up' },
+  { key = 'DownArrow', mods = mod, action = act.ActivatePaneDirection 'Down' },
 
   -- Find
   { key = 'f', mods = mod, action = act.Search { CaseSensitiveString = '' } },
@@ -102,12 +125,18 @@ config.keys = {
 config.audible_bell = 'Disabled'
 config.visual_bell  = {
   fade_in_function     = 'EaseIn',
-  fade_in_duration_ms  = 75,
+  fade_in_duration_ms  = 50,
   fade_out_function    = 'EaseOut',
-  fade_out_duration_ms = 75,
+  fade_out_duration_ms = 50,
 }
 
+-- Windows bullshit
 config.default_prog = { 'wsl.exe', --'distribution', 'Ubuntu', '--cd', '~' }
 config.default_domain = 'WSL:Ubuntu'
+
+-- Event overrides
+wezterm.on('mux-is-process-stateful', function(_proc)
+  return false
+end)
 
 return config
