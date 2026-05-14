@@ -107,9 +107,7 @@ config.visual_bell  = {
   fade_out_duration_ms = 75,
 }
 
-{{ if eq .chezmoi.os "windows" -}}
--- On Windows, default to WSL
-config.default_prog = { 'wsl.exe', '--cd', '~' }
-{{ end -}}
+config.default_prog = { 'wsl.exe', --'distribution', 'Ubuntu', '--cd', '~' }
+config.default_domain = 'WSL:Ubuntu'
 
 return config
