@@ -5,44 +5,59 @@ local act = wezterm.action
 -- Colors and fonts
 
 config.colors = {
-  foreground    = '#576175',
+  foreground    = '#444C5C',
   background    = '#E5F6FF',
   cursor_bg     = '#0077B3',
-  cursor_fg     = '#576175',
+  cursor_fg     = '#444C5C',
   cursor_border = '#0077B3',
   selection_fg  = '#383A42',
   selection_bg  = '#C4C9D4',
 
   ansi = {
-    '#576175', '#E62200', '#219C16', '#E8DF7D',
-    '#1AB2FF', '#CC33CC', '#34B2B2', '#FAFAFA',
+    '#444C5C', -- black
+    '#9B1600', -- red
+    '#219C16', -- green
+    '#757009', -- yellow
+    '#0A4869', -- blue
+    '#812181', -- magenta
+    '#174E4E', -- cyan
+    '#534949', -- white
   },
   brights = {
-    '#8A94A8', '#FF4D4D', '#26B319', '#F0EAA8',
-    '#80D4FF', '#E64DE6', '#33CCCC', '#FFFFFF',
+    '#576175', -- bright black
+    '#B43A24', -- bright red
+    '#1F6A1A', -- bright green
+    '#CD8705', -- bright yellow
+    '#0F6A9B', -- bright blue
+    '#B32DB3', -- bright magenta
+    '#1E6767', -- bright cyan
+    '#6C6C6C', -- bright white
   },
+
+  scrollbar_thumb = '#576175',
 
   tab_bar = {
     background = '#C4C9D4',
 
     active_tab = {
       bg_color = '#E5F6FF',
-      fg_color = '#576175',
+      fg_color = '#444C5C',
+      intensity = 'Bold',
     },
 
     inactive_tab = {
       bg_color = '#C4C9D4',
-      fg_color = '#576175',
+      fg_color = '#444C5C',
     },
 
     inactive_tab_hover = {
-      bg_color = '#8A94A8',
+      bg_color = '#576175',
       fg_color = '#FAFAFA',
     },
 
     new_tab = {
       bg_color = '#C4C9D4',
-      fg_color = '#576175',
+      fg_color = '#444C5C',
     },
     new_tab_hover = {
       bg_color = '#0077B3',
@@ -56,7 +71,7 @@ config.window_frame = {
   inactive_titlebar_bg = '#C4C9D4',
 }
 
-config.font = wezterm.font('JetBrainsMono Nerd Font Mono', { weight = 'Regular' })
+config.font = wezterm.font('JetBrainsMono Nerd Font Mono', { weight = 'Medium' })
 config.font_size = 14.0
 
 -- Window config
@@ -71,9 +86,10 @@ config.default_cwd = wezterm.home_dir .. '/Code'
 config.window_decorations = 'RESIZE|INTEGRATED_BUTTONS'
 config.window_background_opacity = 0.95
 config.window_close_confirmation = 'NeverPrompt'
+config.show_tab_index_tab_bar = false
+config.enable_scroll_bar = true
 
 -- Input handling
-
 local mod = wezterm.target_triple:find('darwin') and 'SUPER' or 'CTRL'
 
 config.mouse_bindings = {
@@ -84,6 +100,7 @@ config.mouse_bindings = {
   },
 }
 
+-- Copy
 config.keys = {
   {
     key = 'c', mods = mod,
@@ -121,20 +138,19 @@ config.keys = {
 }
 
 -- Notifications
-
 config.audible_bell = 'Disabled'
 config.visual_bell  = {
   fade_in_function     = 'EaseIn',
-  fade_in_duration_ms  = 50,
+  fade_in_duration_ms  = 30,
   fade_out_function    = 'EaseOut',
-  fade_out_duration_ms = 50,
+  fade_out_duration_ms = 30,
 }
 
 -- Windows bullshit
-config.default_prog = { 'wsl.exe', --'distribution', 'Ubuntu', '--cd', '~' }
+config.default_prog = { 'wsl.exe', --'distribution', 'Ubuntu', '--cd', '~/Code' }
 config.default_domain = 'WSL:Ubuntu'
 
--- Event overrides
+-- Override the question if I want to close the tab
 wezterm.on('mux-is-process-stateful', function(_proc)
   return false
 end)
