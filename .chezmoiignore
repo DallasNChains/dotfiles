@@ -4,4 +4,4 @@ Library/
 README.md
 bootstrap.sh
 Brewfile
-wsl.conf.tmpl
+wsl.conf
