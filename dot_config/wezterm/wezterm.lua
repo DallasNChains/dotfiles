@@ -86,7 +86,7 @@ config.default_cwd = wezterm.home_dir .. '/Code'
 config.window_decorations = 'RESIZE|INTEGRATED_BUTTONS'
 config.window_background_opacity = 0.95
 config.window_close_confirmation = 'NeverPrompt'
-config.show_tab_index_tab_bar = false
+config.show_tab_index_in_tab_bar = false
 config.enable_scroll_bar = true
 
 -- Input handling
