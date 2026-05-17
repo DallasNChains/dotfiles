@@ -147,7 +147,7 @@ config.visual_bell  = {
 }
 
 -- Windows bullshit
-config.default_prog = { 'wsl.exe', --'distribution', 'Ubuntu', '--cd', '~/Code' }
+config.default_prog = { 'wsl.exe', '--distribution', 'Ubuntu', '--cd', '~/Code' }
 config.default_domain = 'WSL:Ubuntu'
 
 -- Override the question if I want to close the tab
