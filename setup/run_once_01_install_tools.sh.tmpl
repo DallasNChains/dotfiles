@@ -36,7 +36,7 @@ fi
 
 echo "Installing packages from Brewfile..."
 brew bundle --file=- <<EOF
-{{ template "Brewfile" . }}
+{{ template "setup/Brewfile" . }}
 EOF
 
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
