@@ -5,10 +5,10 @@ brew "jandedobbeleer/oh-my-posh/oh-my-posh"
 
 cask "font-jetbrains-mono-nerd-font"
 
-if OS.mac?
+{{- if eq .chezmoi.os "darwin" -}}
   cask "rectangle"
   cask "wezterm"
-elsif OS.linux? && ENV['WSL_DISTRO_NAME'].nil?
+{{- else if and (eq .chezmoi.os "linux") (not (contains "microsoft" (lower .chezmoi.kernel.osrelease))) -}}
   tap "wezterm/wezterm-linuxbrew"
   brew "wezterm"
-end
+{{- end -}}
