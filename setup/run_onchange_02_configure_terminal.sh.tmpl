@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-{{- if contains "microsoft" (lower .chezmoi.kernel.osrelease) -}}
+{{ if contains "microsoft" (lower .chezmoi.kernel.osrelease) }}
     # Copy the wsl.conf from Chezmoi to the /etc directory
-    sudo cp {{- joinPath .chezmoi.sourceDir "wsl.conf" -}} /etc
+    sudo cp {{ joinPath .chezmoi.sourceDir "wsl.conf" }} /etc
 
     # Resolve the Windows user and configuration directory for WezTerm
     WIN_USER=$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r\n')
@@ -14,4 +14,4 @@ set -euo pipefail
     cp ~/.config/wezterm/wezterm.lua "$WEZTERM_CONFIG_DIR/wezterm.lua"
 
     nohup powershell.exe -WindowStyle Hidden -Command "Start-Sleep -Seconds 3; wsl --shutdown" > /dev/null 2>&1 &
-{{- end -}}
+{{ end }}
