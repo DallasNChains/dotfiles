@@ -3,5 +3,4 @@ Library/
 {{ end }}
 README.md
 bootstrap.sh
-Brewfile
 wsl.conf

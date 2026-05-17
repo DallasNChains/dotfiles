@@ -35,7 +35,9 @@ fi
 {{ end }}
 
 echo "Installing packages from Brewfile..."
-brew bundle --file={{ .chezmoi.sourceDir }}/Brewfile
+brew bundle --file=- <<EOF
+{{ template "Brewfile" . }}
+EOF
 
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
     echo "Installing Oh-My-Zsh..."
