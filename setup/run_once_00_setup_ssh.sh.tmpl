@@ -3,7 +3,7 @@ set -euo pipefail
 
 if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
     echo "Generating SSH key..."
-    ssh-keygen -t ed25519 -C "{{ .email }}" -q -N ""
+    ssh-keygen -t ed25519 -f "$HOME/.ssh/id_ed25519" -C "{{ .email }}" -q -N ""
     eval "$(ssh-agent -s)"
 
     echo "Copying public key to clipboard..."
