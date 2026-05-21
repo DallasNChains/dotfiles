@@ -155,4 +155,9 @@ wezterm.on('mux-is-process-stateful', function(_proc)
   return false
 end)
 
+wezterm.on("gui-startup", function(cmd)
+  local _, _, window = wezterm.mux.spawn_window(cmd or {})
+  window:gui_window():focus()
+end):
+
 return config
