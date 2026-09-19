@@ -14,5 +14,15 @@ ZSH_THEME=""
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
+autoload -Uz add-zsh-hook
+
+DISABLE_AUTO_TITLE=true
+
+_precmd_title() {
+    print -Pn "\e]0; %~\a"
+}
+
+add-zsh-hook precmd _precmd_title
+
 # OMP config
 eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/paradox.omp.json)"
